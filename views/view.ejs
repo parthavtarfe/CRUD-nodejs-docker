@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add product</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <center><h2>Product details</h2></center>
+    <div class="container">
+        
+        <form action="#">
+            <div class="form-group">
+                <label for="name">Product name</label>
+                <input class="form-control" type="text" name="name" id="name" value="<%= item.name %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="name">Product description</label>
+                <textarea class="form-control" type="text" name="description" id="description" readonly><%= item.description %></textarea>
+            </div>
+            <div class="form-group">
+                <label for="name">Product price</label>
+                <input class="form-control" type="text" name="price" id="price" value="<%= item.price %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="name">Product quantity</label>
+                <input class="form-control" type="number" name="quantity" id="quantity" value="<%= item.quantity %>" readonly>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<!-- <script src="../environment.js"></script> -->
+<script>
+
+
+
+</script>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List products</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+   
+<body>
+    <center><h2>Product list</h2></center>
+    <div id="container">
+        
+        <table id="productlist">
+            <thead>
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<!-- <script src="../environment.js"></script> -->
+<script>
+   $(document).ready(()=>{
+    $('#productlist').DataTable();
+   })
+
+   function loadTable() {
+        axios({
+            method:"get",
+            url:`http://localhost:3000/product/listproducts`,
+            data:{}
+        }).then((response)=>{
+            console.log(response);
+            generateDT(response.data.data ?? []);
+        }).catch((error)=>{
+            console.log(error);
+        })
+    }
+
+    loadTable();
+
+    function generateDT(products) {
+
+        let html = `<table id="productlist"><thead><tr> <th>Sr.No</th><th>Name</th><th>Description</th><th>Quantity</th><th>Price</th><th>View</th><th>Edit</th><th>Delete</th></tr></thead><tbody>`;
+        if(products.length) {
+            for(let i = 0; i < products.length; i++) {
+                let product = products[i];
+                html+= `<tr>
+                        <td>${i+1}</td>
+                        <td>${product.name}</td>
+                        <td>${product.description}</td>
+                        <td>${product.quantity}</td>
+                        <td>${product.price}</td>
+                        <td> <button class="btn btn-primary" onclick="viewProduct('${product._id}')">View Product</button></td>
+                        <td> <button class="btn btn-primary" onclick="editProduct('${product._id}')">Edit Product </button></td>
+                        <td> <button class="btn btn-danger" onclick="deleteProduct('${product._id}')"> Delete Product </button></td>
+                        </tr>`;
+            }
+            html+=`<tbody></table>`;
+            document.getElementById("container").innerHTML = html;
+            $("#productlist").DataTable();
+        } else {
+            html = `<p><center>No data available</center></p>`;
+            document.getElementById("container").innerHTML = html;
+        }
+    }
+
+    function viewProduct(ID) {
+        window.location.assign(`http://localhost:3000/product/view/${ID}`);
+    }
+
+    function editProduct(ID) {
+        window.location.assign(`http://localhost:3000/product/edit/${ID}`);
+    }
+
+    function deleteProduct(ID) {
+        axios({
+            method:"post",
+            url:`http://localhost:3000/product/deleteproduct`,
+            data:{
+                productID:ID
+            }
+        }).then((response)=>{
+            console.log(response);
+            alert(response.data.message);
+            loadTable();
+        }).catch((error)=>{
+            console.log(error);
+        })
+    }
+</script>
