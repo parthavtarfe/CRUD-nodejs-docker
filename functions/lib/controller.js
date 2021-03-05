@@ -2,19 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const environment_1 = require("./config/environment");
+const product_1 = require("./controller/product");
 var app = express();
 var mongo_instance = require('./connection');
 let prod = require('./mongo_schemas/product');
 app.set('view engine', 'ejs');
 app.options('/*', function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8888');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.sendResponse(200);
 });
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8888');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -54,62 +55,10 @@ app.get('/product/view/:Id', (req, res, next) => {
         res.json({ "message": "Something went wrong while getting product details" });
     });
 });
-app.post('/product/addproduct', (req, res) => {
-    var _a, _b, _c, _d;
-    console.log("inside add product");
-    const newItem = new prod({
-        name: (_a = req.body.name) !== null && _a !== void 0 ? _a : "NA",
-        description: (_b = req.body.description) !== null && _b !== void 0 ? _b : "NA",
-        quantity: (_c = req.body.quantity) !== null && _c !== void 0 ? _c : 0,
-        price: (_d = req.body.price) !== null && _d !== void 0 ? _d : 0,
-    });
-    newItem.save().then(item => res.json({ "message": "Product added." }));
-});
-app.post('/product/editproduct', (req, res) => {
-    let productID = req.body.productID;
-    let updatedItem = {
-        name: req.body.name,
-        description: req.body.description,
-        quantity: req.body.quantity,
-        price: req.body.price,
-    };
-    console.log(updatedItem);
-    prod.findByIdAndUpdate(productID, { $set: updatedItem })
-        .then((response) => {
-        res.json({ "message": "Product updated." });
-    }).catch((error) => {
-        res.json({ "message": "Something went wrong while updating product details." });
-    });
-});
-app.get('/product/getproduct', (req, res) => {
-    let productID = req.body.productID;
-    prod.findById(productID)
-        .then((item) => {
-        res.render('view', { item });
-    }).catch((error) => {
-        res.json({ "message": "Something went wrong while getting product details" });
-    });
-});
-app.post('/product/deleteproduct', (req, res) => {
-    let productID = req.body.productID;
-    prod.findByIdAndRemove(productID)
-        .then((item) => {
-        res.json({ "message": "Product deleted." });
-    }).catch((error) => {
-        res.json({ "message": "Something went wrong while getting product details" });
-    });
-});
-app.get('/product/listproducts', (req, res) => {
-    prod.find()
-        .then((items) => {
-        console.log(items);
-        res.json({
-            data: items,
-            message: "Product list found."
-        });
-    }).catch((error) => {
-        console.log(error);
-    });
-});
+app.post('/product/addProduct', product_1.productController.addProduct);
+app.post('/product/editproduct', product_1.productController.editProduct);
+app.get('/product/getproduct', product_1.productController.getProduct);
+app.post('/product/deleteproduct', product_1.productController.deleteProduct);
+app.get('/product/listproducts', product_1.productController.listproducts);
 module.exports = { app };
 //# sourceMappingURL=controller.js.map

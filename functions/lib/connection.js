@@ -14,6 +14,9 @@ class Database {
             console.error('Database connection error');
         });
     }
+    close() {
+        mongoose.connection.close();
+    }
 }
 mongoose.set('useFindAndModify', true);
 module.exports = new Database();
